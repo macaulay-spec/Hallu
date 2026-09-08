@@ -49,12 +49,10 @@ There are **28 screens**, each shown in two styles.
 | 24 | Followers | `premium/24-followers` | `line-art/24-followers` |
 | 25 | Settings | `premium/25-settings` | `line-art/25-settings` |
 | 26 | Moderation Queue | `premium/26-moderation-queue` | `line-art/26-moderation` |
-| 27 | Following List | `premium/27-following` (next) | `line-art/27-following` |
-| 28 | Currently Watching | `premium/28-currently-watching` (next) | `line-art/28-currently-watching` |
+| 27 | Following List | `premium/27-following` | `line-art/27-following` |
+| 28 | Currently Watching | `premium/28-currently-watching` | `line-art/28-currently-watching` |
 
-> Note: premium files `27` and `28` are generated in the next batch (image
-> generator is capped at 10 per turn). Their **line-art** counterparts are
-> already committed and are the reference for those screens.
+> All 28 screens are now covered in both styles.
 
 ## How to regenerate the line-art
 
