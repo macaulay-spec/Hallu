@@ -1,0 +1,950 @@
+# HALLYU — FRONTEND & BACKEND ENGINEERING RULES
+
+VERSION 1.0
+SYSTEM-WIDE IMPLEMENTATION CONSTITUTION
+
+This document defines the non-negotiable engineering rules for building Hallyu across both frontend and backend.
+
+Use this document together with:
+
+1. Hallyu_Final_Integrated_Master_Build_Specification.md
+2. HALLYU_BUILD_PROMPT.md
+3. blueprints/
+4. This document
+
+==================================================
+1. SOURCE-OF-TRUTH HIERARCHY
+==================================================
+
+When documents, images, or implementation assumptions disagree, follow this priority:
+
+1. MASTER SPECIFICATION
+   Defines product behavior, scope, rules, permissions, architecture, data model,
+   security requirements, and MVP boundaries.
+
+2. FRONTEND & BACKEND ENGINEERING RULES
+   Defines how the frontend and backend must be implemented and connected.
+
+3. BUILD PROMPT
+   Defines the coding-agent execution process.
+
+4. LINE-ART BLUEPRINTS
+   Defines structural layout, component relationships, and interaction intent.
+
+5. PREMIUM BLUEPRINT IMAGES
+   Defines visual direction, hierarchy, composition, styling, and presentation.
+
+A lower-priority source MUST NOT override a higher-priority requirement.
+
+==================================================
+2. BLUEPRINT RECONCILIATION PROTOCOL
+==================================================
+
+THIS IS A NON-NEGOTIABLE RULE.
+
+The blueprint images are visual implementation references.
+
+They are NOT the ultimate source of product truth.
+
+IF A BLUEPRINT IMAGE CONFLICTS WITH THE WRITTEN PRODUCT SPECIFICATION:
+
+DO NOT BLINDLY COPY THE IMAGE.
+
+Instead:
+
+1. Read the relevant section of the Master Specification.
+2. Read the relevant section of HALLYU_BUILD_PROMPT.md.
+3. Inspect the matching premium blueprint.
+4. Inspect the matching line-art blueprint.
+5. Identify the conflict.
+6. Preserve the written product requirement.
+7. Preserve the blueprint's visual language wherever compatible.
+8. Adapt the visual implementation to satisfy the actual product requirement.
+9. Never invent functionality simply because it appears in an image.
+10. Never remove required functionality simply because it is absent from an image.
+11. Never treat placeholder content in a blueprint as production data.
+12. Never treat a screenshot as a complete functional specification.
+
+The objective is NOT pixel-perfect reproduction of a static image.
+
+The objective is:
+
+PRODUCT CORRECTNESS
++
+FUNCTIONAL CORRECTNESS
++
+BACKEND CORRECTNESS
++
+SECURITY
++
+ACCESSIBILITY
++
+VISUAL FIDELITY
+
+If an image and the written specification disagree, the written specification wins.
+
+If the visual design can be adapted without violating the specification, adapt it rather than ignoring the blueprint.
+
+==================================================
+3. WHAT BLUEPRINTS ARE ALLOWED TO DEFINE
+==================================================
+
+Blueprints primarily define:
+
+- visual hierarchy
+- layout
+- spacing
+- typography hierarchy
+- component relationships
+- navigation appearance
+- card treatment
+- visual density
+- interaction intent
+- brand language
+- screen composition
+- visual emphasis
+
+Blueprints do NOT independently define:
+
+- database architecture
+- database permissions
+- RLS
+- authentication behavior
+- authorization
+- API contracts
+- business logic
+- spoiler authorization
+- moderation policy
+- production content
+- analytics requirements
+- security policy
+- data retention
+- backend architecture
+
+A picture of a button does not automatically mean the product contains that feature.
+
+A missing button in a picture does not mean a required feature should be removed.
+
+==================================================
+4. CORE ENGINEERING PRINCIPLE
+==================================================
+
+HALLYU IS ONE SYSTEM.
+
+Frontend and backend must never be developed as unrelated layers.
+
+Every meaningful feature must exist as a complete vertical slice:
+
+UI
+↓
+State
+↓
+Service/Data Layer
+↓
+Backend
+↓
+Database
+↓
+Security/RLS
+↓
+Response
+↓
+UI State
+
+A feature is NOT complete when only its UI exists.
+
+A feature is NOT complete when only its database table exists.
+
+A feature is NOT complete when only its API exists.
+
+The complete user flow must work.
+
+==================================================
+5. FRONTEND ARCHITECTURE RULES
+==================================================
+
+Use React Native + Expo as defined by the Master Specification.
+
+Maintain clear separation between:
+
+- screens
+- navigation
+- reusable components
+- feature modules
+- hooks
+- state
+- services
+- Supabase integration
+- utilities
+- types
+- validation
+- analytics
+
+Do not put large amounts of business logic directly inside screen components.
+
+Keep components focused and reusable.
+
+Repeated UI patterns MUST become reusable components.
+
+Examples:
+
+- PostCard
+- UserRow
+- DramaCard
+- ActorCard
+- EpisodeRow
+- CommunityRow
+- ReactionBar
+- SpoilerGate
+- MediaViewer
+- LoadingState
+- EmptyState
+- ErrorState
+- Button
+- Input
+- Chip
+- Tab
+- BottomSheet
+
+Do not duplicate nearly identical logic across multiple screens.
+
+==================================================
+6. DESIGN SYSTEM RULES
+==================================================
+
+All production UI must use centralized design tokens.
+
+Do not scatter arbitrary values throughout the application.
+
+Centralize:
+
+- colors
+- typography
+- spacing
+- radii
+- shadows
+- elevation
+- animation timing
+- icon sizing
+- touch targets
+
+Current Hallyu visual baseline:
+
+Dark surface:
+#0F0F0F
+
+Brand gradient:
+#4A1C6E → #2D6CDF
+
+Accent:
+#FF6B6B
+
+Typography:
+Inter or equivalent modern sans-serif.
+
+Cards:
+Approximately 12px radius.
+
+Spacing:
+Approximately 16px internal spacing baseline.
+
+These values are visual baselines, not permission to hard-code every screen.
+
+They must be centralized and adjustable.
+
+==================================================
+7. NAVIGATION RULES
+==================================================
+
+The five primary destinations remain:
+
+1. Home
+2. Explore
+3. Create
+4. Notifications
+5. Profile
+
+Do not add additional primary navigation destinations unless explicitly required by the Master Specification.
+
+Secondary destinations may use:
+
+- navigation stacks
+- modal screens
+- sheets
+- contextual navigation
+- deep links
+
+Moderation/admin functionality must remain permission-gated.
+
+==================================================
+8. REAL DATA RULE
+==================================================
+
+Production UI MUST consume real backend data.
+
+Forbidden:
+
+- fake JSON pretending to be a finished feature
+- hard-coded follower counts
+- hard-coded likes
+- fake comments
+- fake notifications
+- fake follows
+- fake moderation results
+- fake authenticated users
+- fake successful mutations
+- static production data presented as live data
+- buttons that visually work but perform no real operation
+
+Development seed data is allowed ONLY when clearly treated as seed/development data.
+
+==================================================
+9. BACKEND ARCHITECTURE
+==================================================
+
+Use Supabase/PostgreSQL as defined by the Master Specification.
+
+The backend must support the product's required entities, including:
+
+- users
+- profiles
+- preferences
+- follows
+- blocks
+- mutes
+- dramas
+- episodes
+- actors
+- cast
+- genres
+- watch progress
+- posts
+- post media
+- drama tags
+- episode tags
+- hashtags
+- mentions
+- comments
+- reactions
+- reposts
+- bookmarks
+- communities
+- community members
+- community roles
+- episode discussions
+- official accounts
+- verification
+- notifications
+- notification preferences
+- reports
+- moderation actions
+- moderation logs
+- audit logs
+
+Do not create unnecessary duplicate sources of truth.
+
+==================================================
+10. DATABASE RULES
+==================================================
+
+Critical application state must live in the database.
+
+Examples:
+
+- follows
+- watched episodes
+- watching status
+- post ownership
+- reactions
+- bookmarks
+- comments
+- community membership
+- moderation decisions
+- permissions
+- notification state
+
+Schema changes MUST use versioned migrations.
+
+Never rely on undocumented manual database changes.
+
+Use appropriate:
+
+- foreign keys
+- unique constraints
+- check constraints
+- indexes
+- timestamps
+- deletion behavior
+- referential integrity
+
+Avoid:
+
+- N+1 queries
+- unbounded queries
+- fetching entire tables
+- unnecessary columns
+- huge client-side datasets
+- client-side filtering of massive datasets
+
+Use:
+
+- pagination
+- indexed queries
+- server-side filtering
+- deterministic ordering
+- selective data retrieval
+
+==================================================
+11. SECURITY AND RLS
+==================================================
+
+SECURITY MUST NEVER DEPEND ONLY ON THE FRONTEND.
+
+Hiding a button is NOT authorization.
+
+Every protected operation must be protected server-side.
+
+Use Row Level Security where appropriate.
+
+Users may only:
+
+- read permitted data
+- modify resources they own
+- perform actions allowed by their role
+- access communities they are permitted to access
+- perform moderation actions when authorized
+
+Spoiler restrictions must not be bypassable through direct database access.
+
+Moderator/admin functionality must be server-authorized.
+
+Private-account rules must be server-enforced.
+
+Private-community rules must be server-enforced.
+
+Never expose service-role credentials to the mobile application.
+
+Never ship private API secrets inside the frontend bundle.
+
+==================================================
+12. AUTHENTICATION RULES
+==================================================
+
+Authentication must use the configured Supabase authentication system.
+
+Handle:
+
+- sign up
+- sign in
+- sign out
+- session restoration
+- expired sessions
+- password recovery
+- authentication errors
+- account deletion
+- account state changes
+
+Never assume authentication simply because a screen is visible.
+
+Every protected backend operation must validate the authenticated identity.
+
+==================================================
+13. SPOILER SYSTEM RULES
+==================================================
+
+Spoiler protection is a CORE HALLYU feature.
+
+The frontend and backend must cooperate.
+
+The system must understand:
+
+- drama
+- episode
+- watched-through episode
+- spoiler level
+- episode discussion context
+
+The frontend must provide appropriate spoiler gates.
+
+The backend/data layer must prevent inappropriate disclosure where required.
+
+A blurred UI element is NOT sufficient if protected information has already been exposed in the response.
+
+Support appropriate controls for:
+
+- reveal
+- hide
+- spoiler preferences
+- muted dramas where supported
+
+Spoiler behavior must remain consistent across:
+
+- Home
+- Explore
+- Drama Hubs
+- Episode Discussions
+- Post Detail
+- Search
+- Notifications
+- Profiles
+- Communities
+- Deep Links
+
+==================================================
+14. FEED RULES
+==================================================
+
+FOR YOU should initially use deterministic signals.
+
+Relevant signals may include:
+
+- followed users
+- followed dramas
+- followed actors
+- followed communities
+- interests
+- watch history
+- reactions
+- comments
+- bookmarks
+- reposts
+- freshness
+- meaningful engagement
+
+Do NOT build unnecessarily complex recommendation infrastructure before sufficient behavioral data exists.
+
+FOLLOWING should prioritize the user's actual followed graph.
+
+Every feed must respect:
+
+- blocks
+- mutes
+- privacy
+- moderation
+- deletion
+- spoiler rules
+
+==================================================
+15. POST CREATION
+==================================================
+
+Post creation must be a real transactional flow.
+
+Expected flow:
+
+Compose
+↓
+Validate
+↓
+Upload media if applicable
+↓
+Create post
+↓
+Attach drama/episode metadata
+↓
+Attach hashtags/mentions
+↓
+Publish
+↓
+Update feed
+
+Handle partial failures.
+
+Example:
+
+If media upload succeeds but post creation fails, do not silently leave unmanaged files.
+
+Mutations must provide meaningful success and failure states.
+
+==================================================
+16. COMMENTS AND REPLIES
+==================================================
+
+Comments must be real database records.
+
+Enforce:
+
+- ownership
+- moderation
+- deletion rules
+- blocked-user behavior
+- visibility
+- spoiler behavior where applicable
+
+Nested replies must follow the supported depth defined by the product specification.
+
+Do not fake threaded discussions with local-only state.
+
+==================================================
+17. MEDIA RULES
+==================================================
+
+Follow the media requirements defined by the Master Specification.
+
+Frontend responsibilities:
+
+- validate basic file requirements
+- show previews
+- show upload progress
+- handle cancellation
+- handle failure
+- avoid unnecessary uploads
+
+Backend/storage responsibilities:
+
+- validate ownership
+- validate permissions
+- enforce supported file constraints
+- manage storage lifecycle
+- support moderation
+- remove orphaned media when appropriate
+
+Do NOT implement:
+
+- unauthorized streaming
+- unauthorized downloading
+- full-episode hosting
+- piracy functionality
+
+==================================================
+18. REALTIME RULES
+==================================================
+
+Realtime should be used only where it materially improves the experience.
+
+Appropriate examples:
+
+- episode discussions
+- new comments
+- replies
+- relevant notifications
+- moderation queues where appropriate
+
+Do not subscribe every screen to every realtime channel.
+
+Realtime subscriptions must be:
+
+- scoped
+- cleaned up
+- permission-aware
+- reconnect-safe
+
+==================================================
+19. SEARCH RULES
+==================================================
+
+Search must be backend-driven.
+
+Support relevant entities:
+
+- dramas
+- actors
+- users
+- communities
+- posts
+- hashtags
+
+Use appropriate database search/indexing.
+
+Do not download huge datasets and search them locally.
+
+Search must respect:
+
+- privacy
+- blocks
+- moderation
+- visibility rules
+
+==================================================
+20. NOTIFICATION RULES
+==================================================
+
+Notifications must originate from real application events.
+
+Examples:
+
+- replies
+- mentions
+- follows
+- episode releases
+- community announcements
+- relevant official updates
+
+Notifications must support deep linking to the appropriate content.
+
+Respect notification preferences.
+
+Avoid accidental duplicate notifications.
+
+==================================================
+21. COMMUNITY RULES
+==================================================
+
+Community membership and permissions must be server-enforced.
+
+Support appropriate roles such as:
+
+- member
+- moderator
+- owner/admin where defined
+
+Respect:
+
+- private communities
+- membership
+- bans
+- removals
+- posting permissions
+- moderation
+- community rules
+
+==================================================
+22. OFFICIAL ACCOUNT RULES
+==================================================
+
+Official status must come from authoritative backend state.
+
+Never create verification simply by rendering a checkmark.
+
+Official accounts must use the permission model defined by the Master Specification.
+
+==================================================
+23. MODERATION RULES
+==================================================
+
+Moderation pipeline:
+
+Report
+↓
+Classification
+↓
+Severity
+↓
+Automated action where appropriate
+↓
+Moderator queue
+↓
+Decision
+↓
+Audit log
+↓
+Appeal where supported
+
+Moderation actions must be auditable.
+
+Ordinary users must never gain access to moderator controls through frontend manipulation.
+
+AI moderation must assist humans where required.
+
+AI must not become an uncontrolled authority over high-impact enforcement.
+
+==================================================
+24. AI RULES
+==================================================
+
+AI is an assisting subsystem.
+
+Possible services:
+
+- spoiler classification
+- toxicity classification
+- spam detection
+- duplicate detection
+- post categorization
+- hashtag suggestions
+- translation
+- recommendation assistance
+
+Every AI subsystem must define:
+
+- input
+- output
+- confidence
+- fallback
+- human-review behavior where applicable
+- logging requirements
+- privacy requirements
+
+AI must NEVER:
+
+- bypass RLS
+- bypass authentication
+- receive secrets from the frontend
+- silently perform high-impact actions without defined safeguards
+
+==================================================
+25. LOADING / EMPTY / ERROR STATES
+==================================================
+
+Every asynchronous feature MUST support intentional:
+
+- loading
+- success
+- empty
+- partial failure
+- complete failure
+- retry
+- intermittent connectivity
+
+Do not use infinite spinners as error handling.
+
+Do not show blank screens when data fails.
+
+Optimistic updates must have rollback behavior.
+
+==================================================
+26. OFFLINE AND NETWORK RESILIENCE
+==================================================
+
+Design for real mobile networks.
+
+The application must gracefully handle:
+
+- slow connections
+- temporary loss of connectivity
+- failed uploads
+- request timeouts
+- realtime disconnects
+- retry
+- stale cached data
+
+Do not assume permanent high-speed Wi-Fi.
+
+==================================================
+27. PERFORMANCE RULES
+==================================================
+
+Prioritize:
+
+- fast initial render
+- optimized images
+- lazy loading
+- pagination
+- efficient lists
+- caching
+- minimal unnecessary requests
+- efficient realtime subscriptions
+- memory-conscious rendering
+
+Do not hard-code the blueprint dimensions.
+
+Real devices have different:
+
+- screen sizes
+- aspect ratios
+- safe areas
+- font scales
+- keyboards
+- accessibility settings
+
+==================================================
+28. ACCESSIBILITY RULES
+==================================================
+
+Accessibility is part of implementation, not a final polish step.
+
+Support:
+
+- screen readers
+- semantic labels
+- sufficient contrast
+- dynamic text sizing
+- usable touch targets
+- reduced motion
+- accessible forms
+- meaningful errors
+
+If a visual blueprint conflicts with accessibility, preserve the design intent while adapting the implementation for accessibility.
+
+==================================================
+29. DEEP LINK RULES
+==================================================
+
+Important Hallyu content must support deep links.
+
+Examples:
+
+- drama
+- episode
+- post
+- profile
+- community
+- hashtag
+
+Deep links must respect:
+
+- authentication
+- privacy
+- permissions
+- spoiler rules
+- deleted content
+
+==================================================
+30. ANALYTICS RULES
+==================================================
+
+Measure meaningful product behavior.
+
+Examples:
+
+- onboarding completion
+- drama follows
+- episode discussion entry
+- post creation
+- comments
+- reactions
+- bookmarks
+- reposts
+- follows
+- community joins
+- notification engagement
+- retention
+
+Do not collect unnecessary personal information.
+
+Analytics must never become a dependency that prevents core product functionality.
+
+==================================================
+31. FEATURE FLAGS
+==================================================
+
+Deferred functionality should be isolated behind feature flags where appropriate.
+
+Examples:
+
+- video
+- polls
+- DMs
+- advanced AI
+- future creator features
+
+Disabled functionality must not leak unfinished production UI.
+
+Do not silently activate deferred functionality.
+
+==================================================
+32. ENVIRONMENT AND SECRETS
+==================================================
+
+Maintain separate development, testing and production environments.
+
+Never commit:
+
+- private API keys
+- service-role keys
+- database passwords
+- private credentials
+- production secrets
+- user secrets
+
+Use secure environment configuration.
+
+==================================================
+33. DATA CONSISTENCY
+==================================================
+
+The backend is authoritative.
+
+Frontend state must reconcile with backend state.
+
+For mut.  (PROMPT NOT COMPLETEL COMPLETE THE RULE AND CONTINUE YOURSELF)
