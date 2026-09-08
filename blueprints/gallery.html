@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hallyu — App Blueprint Gallery</title>
+<style>
+  :root{
+    --bg:#0a0a0b; --panel:#121214; --line:#26262b; --text:#f4f4f5;
+    --muted:#9b9ba3; --brand-a:#4A1C6E; --brand-b:#2D6CDF; --accent:#FF6B6B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    background:radial-gradient(1200px 600px at 20% -10%,#150c22 0%,var(--bg) 55%) fixed; color:var(--text)}
+  header{padding:44px 28px 0;max-width:1240px;margin:0 auto}
+  .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--brand-b);font-weight:700}
+  h1{font-size:clamp(28px,5vw,46px);margin:8px 0 6px;line-height:1.05}
+  h1 .kr{background:linear-gradient(90deg,#c76bff,var(--brand-b));-webkit-background-clip:text;background-clip:text;color:transparent}
+  p.sub{color:var(--muted);max-width:800px;line-height:1.6;font-size:16px}
+  .meta{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0 0}
+  .pill{border:1px solid var(--line);background:#151519;padding:6px 13px;border-radius:999px;color:#d5d5da;font-size:13px}
+  .pill b{color:#fff}
+  .toc{display:flex;gap:8px 20px;flex-wrap:wrap;margin:22px 0 4px;padding:0 0 12px;border-bottom:1px solid var(--line)}
+  .toc a{color:#cfd2ff;text-decoration:none;font-size:14px;font-weight:600}
+  .toc a:hover{color:#fff}
+  section{max-width:1240px;margin:0 auto;padding:26px 28px 8px}
+  section h2{font-size:22px;margin:0 0 4px}
+  section h2 .tag{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .sub{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+  .card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#000}
+  .card .body{padding:15px 16px 17px}
+  .card .num{font-size:11px;letter-spacing:.16em;color:var(--brand-b);font-weight:700;text-transform:uppercase}
+  .card h2{font-size:17px;margin:5px 0 4px}
+  .card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+  .card.pending{background:#101013;outline:1px dashed #3a3a44}
+  .card.pending .ph{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#666;font-size:13px;
+    background:repeating-linear-gradient(45deg,#101013,#101013 12px,#141419 12px,#141419 24px)}
+  footer{max-width:1240px;margin:0 auto;padding:26px 28px 60px;color:var(--muted);font-size:13px;line-height:1.7;border-top:1px solid var(--line)}
+  footer code{color:#e6c8ff;background:#191722;padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Hallyu · App Blueprint Deck</div>
+  <h1>Where the <span class="kr">Wave</span> Lives</h1>
+  <p class="sub">Apple-level high-fidelity iPhone mockups plus annotated technical blueprints for the mobile-first K-drama fandom social platform defined in <code>Hallyu_Final_Integrated_Master_Build_Specification.md</code>. Every screen is rendered on a phone frame; one file per screen.</p>
+  <div class="meta">
+    <span class="pill"><b>Premium dark UI</b> 28 screens</span>
+    <span class="pill"><b>Technical blueprints</b> 28 screens (SVG + PNG)</span>
+    <span class="pill"><b>Build prompt</b> <code>HALLYU_BUILD_PROMPT.md</code></span>
+  </div>
+  <nav class="toc">
+    <a href="#premium">Premium set</a>
+    <a href="#line">Technical blueprints</a>
+    <a href="#notes">Notes</a>
+  </nav>
+</header>
+
+<section>
+  <h2>Premium set <span class="tag">Apple-level</span></h2>
+  <p class="sub">Finished dark UI renders on a studio backdrop using the brand baseline: purple→blue gradient, dark surfaces, red accent. Includes a master overview board.</p>
+  <div class="grid">
+    <div class="card"><img src="premium/00-master-overview.png" alt="Master overview"><div class="body"><div class="num">00</div><h2>Master Overview Board</h2><p>Six key screens presented as a single design deck.</p></div></div>
+    <div class="card"><img src="premium/01-splash.png" alt="Splash"><div class="body"><div class="num">01</div><h2>Splash</h2><p>Wave mark, Hallyu wordmark, 한류, tagline.</p></div></div>
+    <div class="card"><img src="premium/02-welcome.png" alt="Welcome"><div class="body"><div class="num">02</div><h2>Welcome</h2><p>Cinematic hero, Get Started, community teaser.</p></div></div>
+    <div class="card"><img src="premium/03-signup-login.png" alt="Sign up / Login"><div class="body"><div class="num">03</div><h2>Sign Up / Log In</h2><p>Email + password, Google and Apple sign-in.</p></div></div>
+    <div class="card"><img src="premium/04-onboarding-interests.png" alt="Onboarding interests"><div class="body"><div class="num">04</div><h2>Onboarding · Interests</h2><p>Genre chips, multi-select, progress dots.</p></div></div>
+    <div class="card"><img src="premium/05-onboarding-follows.png" alt="Onboarding follows"><div class="body"><div class="num">05</div><h2>Onboarding · Follows</h2><p>Drama cards and community suggestions with follow buttons.</p></div></div>
+    <div class="card"><img src="premium/06-home-foryou.png" alt="Home For You"><div class="body"><div class="num">06</div><h2>Home · For You</h2><p>Segmented feed, update rings, spoiler-blurred post.</p></div></div>
+    <div class="card"><img src="premium/07-home-following.png" alt="Home Following"><div class="body"><div class="num">07</div><h2>Home · Following</h2><p>Chronological feed from followed users, dramas, communities.</p></div></div>
+    <div class="card"><img src="premium/08-explore.png" alt="Explore"><div class="body"><div class="num">08</div><h2>Explore</h2><p>Unified search, Current Wave, trending, communities.</p></div></div>
+    <div class="card"><img src="premium/09-create-composer.png" alt="Create post"><div class="body"><div class="num">09</div><h2>Create Composer</h2><p>Drama/episode tag, spoiler toggle, media grid, category pills.</p></div></div>
+    <div class="card"><img src="premium/10-notifications.png" alt="Notifications"><div class="body"><div class="num">10</div><h2>Notifications</h2><p>Priority episode card, filters, deep links, empty state.</p></div></div>
+    <div class="card"><img src="premium/11-profile.png" alt="Profile"><div class="body"><div class="num">11</div><h2>Profile</h2><p>Cover, stats, Currently Watching rail, content tabs.</p></div></div>
+    <div class="card"><img src="premium/12-drama-hub.png" alt="Drama hub"><div class="body"><div class="num">12</div><h2>Drama Hub</h2><p>Backdrop, follow + watching status, cast carousel, episodes.</p></div></div>
+    <div class="card"><img src="premium/13-episode-discussion.png" alt="Episode discussion"><div class="body"><div class="num">13</div><h2>Episode Discussion</h2><p>Spoiler gate, live reactions, thread list, composer.</p></div></div>
+    <div class="card"><img src="premium/14-post-detail.png" alt="Post detail"><div class="body"><div class="num">14</div><h2>Post Detail + Comments</h2><p>Full post, 3-level nested replies, reactions, reply bar.</p></div></div>
+    <div class="card"><img src="premium/15-community-page.png" alt="Community page"><div class="body"><div class="num">15</div><h2>Community Page</h2><p>Banner, join, rules pill, pinned post, feed.</p></div></div>
+    <div class="card"><img src="premium/16-search-results.png" alt="Search results"><div class="body"><div class="num">16</div><h2>Search Results</h2><p>Filter chips, unified results across all entity types.</p></div></div>
+    <div class="card"><img src="premium/17-account-recovery.png" alt="Account recovery"><div class="body"><div class="num">17</div><h2>Account Recovery</h2><p>Forgot password, email reset link, back to sign in.</p></div></div>
+    <div class="card"><img src="premium/18-onboarding-actors.png" alt="Onboarding actors"><div class="body"><div class="num">18</div><h2>Onboarding · Actors</h2><p>Actor portrait grid, selected checks, progress dots.</p></div></div>
+    <div class="card"><img src="premium/19-onboarding-communities.png" alt="Onboarding communities"><div class="body"><div class="num">19</div><h2>Onboarding · Communities</h2><p>Community join rows, verified official accounts.</p></div></div>
+    <div class="card"><img src="premium/20-onboarding-completion.png" alt="Onboarding completion"><div class="body"><div class="num">20</div><h2>Onboarding · Completion</h2><p>Success wave, "Your wave is ready", Start exploring.</p></div></div>
+    <div class="card"><img src="premium/21-actor-page.png" alt="Actor page"><div class="body"><div class="num">21</div><h2>Actor Page</h2><p>Cinematic portrait, verified, Known For, Filmography.</p></div></div>
+    <div class="card"><img src="premium/22-hashtag-page.png" alt="Hashtag page"><div class="body"><div class="num">22</div><h2>Hashtag Page</h2><p>Topic header, feed, related topic chips.</p></div></div>
+    <div class="card"><img src="premium/23-saved.png" alt="Saved"><div class="body"><div class="num">23</div><h2>Saved / Bookmarks</h2><p>Filter chips, bookmarked cards, empty hint.</p></div></div>
+    <div class="card"><img src="premium/24-followers.png" alt="Followers"><div class="body"><div class="num">24</div><h2>Followers</h2><p>Toggle list, search, follow buttons.</p></div></div>
+    <div class="card"><img src="premium/25-settings.png" alt="Settings"><div class="body"><div class="num">25</div><h2>Settings</h2><p>Grouped list, toggles, privacy & blocks, spoilers.</p></div></div>
+    <div class="card"><img src="premium/26-moderation-queue.png" alt="Moderation"><div class="body"><div class="num">26</div><h2>Moderation Queue</h2><p>Summary cards, severity filters, Approve / Remove / Dismiss.</p></div></div>
+    <div class="card pending"><div class="ph">Premium 27 · next batch</div><div class="body"><div class="num">27</div><h2>Following List</h2><p>Same layout as Followers (toggle to Following). Use line-art 27 as reference.</p></div></div>
+    <div class="card pending"><div class="ph">Premium 28 · next batch</div><div class="body"><div class="num">28</div><h2>Currently Watching</h2><p>Tracked dramas, episode progress rings, add-drama entry.</p></div></div>
+  </div>
+</section>
+
+<section id="line">
+  <h2>Technical blueprints <span class="tag">Line-art</span></h2>
+  <p class="sub">Hand-authored vector wireframes on a navy grid, annotated with numbered callouts. Each comes as a crisp SVG plus a PNG rasterized at 1600px width — no garbled labels. All 28 screens are complete in this style.</p>
+  <div class="grid">
+    <div class="card"><img src="line-art/01-splash.png" alt="Splash blueprint"><div class="body"><div class="num">01</div><h2>Splash</h2><p>Wave mark · app name · tagline.</p></div></div>
+    <div class="card"><img src="line-art/02-welcome.png" alt="Welcome blueprint"><div class="body"><div class="num">02</div><h2>Welcome</h2><p>Cinematic hero · primary CTA · community teaser.</p></div></div>
+    <div class="card"><img src="line-art/03-auth.png" alt="Auth blueprint"><div class="body"><div class="num">03</div><h2>Sign Up / Log In</h2><p>Email + password · social sign-in · terms.</p></div></div>
+    <div class="card"><img src="line-art/04-onboarding-interests.png" alt="Interests blueprint"><div class="body"><div class="num">04</div><h2>Onboarding · Interests</h2><p>Genre chips · multi-select · progress.</p></div></div>
+    <div class="card"><img src="line-art/05-onboarding-follows.png" alt="Follows blueprint"><div class="body"><div class="num">05</div><h2>Onboarding · Follows</h2><p>Drama cards · community join · personalization.</p></div></div>
+    <div class="card"><img src="line-art/06-home-foryou.png" alt="Home blueprint"><div class="body"><div class="num">06</div><h2>Home · For You</h2><p>Segmented feed · update rings · spoiler post.</p></div></div>
+    <div class="card"><img src="line-art/07-home-following.png" alt="Following blueprint"><div class="body"><div class="num">07</div><h2>Home · Following</h2><p>Chronological · followed graph · episode events.</p></div></div>
+    <div class="card"><img src="line-art/08-explore.png" alt="Explore blueprint"><div class="body"><div class="num">08</div><h2>Explore</h2><p>Unified search · Current Wave · trending.</p></div></div>
+    <div class="card"><img src="line-art/09-create.png" alt="Create blueprint"><div class="body"><div class="num">09</div><h2>Create Composer</h2><p>Drama tag · spoiler toggle · category pills.</p></div></div>
+    <div class="card"><img src="line-art/10-notifications.png" alt="Notifications blueprint"><div class="body"><div class="num">10</div><h2>Notifications</h2><p>Priority episode card · filters · deep links.</p></div></div>
+    <div class="card"><img src="line-art/11-profile.png" alt="Profile blueprint"><div class="body"><div class="num">11</div><h2>Profile</h2><p>Cover + stats · Currently Watching · tabs.</p></div></div>
+    <div class="card"><img src="line-art/12-drama-hub.png" alt="Drama hub blueprint"><div class="body"><div class="num">12</div><h2>Drama Hub</h2><p>Backdrop + title · cast carousel · episodes.</p></div></div>
+    <div class="card"><img src="line-art/13-episode.png" alt="Episode blueprint"><div class="body"><div class="num">13</div><h2>Episode Discussion</h2><p>Spoiler gate · live reactions · composer.</p></div></div>
+    <div class="card"><img src="line-art/14-post-detail.png" alt="Post detail blueprint"><div class="body"><div class="num">14</div><h2>Post Detail + Comments</h2><p>Threaded replies · reactions · reply bar.</p></div></div>
+    <div class="card"><img src="line-art/15-community.png" alt="Community blueprint"><div class="body"><div class="num">15</div><h2>Community Page</h2><p>Banner + join · pinned rules · feed.</p></div></div>
+    <div class="card"><img src="line-art/16-search.png" alt="Search blueprint"><div class="body"><div class="num">16</div><h2>Search Results</h2><p>Filter chips · unified results · empty state.</p></div></div>
+    <div class="card"><img src="line-art/17-account-recovery.png" alt="Recovery blueprint"><div class="body"><div class="num">17</div><h2>Account Recovery</h2><p>Forgot password · email reset · back to sign in.</p></div></div>
+    <div class="card"><img src="line-art/18-onboarding-actors.png" alt="Actors blueprint"><div class="body"><div class="num">18</div><h2>Onboarding · Actors</h2><p>Portraits · multi-select · progress.</p></div></div>
+    <div class="card"><img src="line-art/19-onboarding-communities.png" alt="Communities blueprint"><div class="body"><div class="num">19</div><h2>Onboarding · Communities</h2><p>Join rows · verified official · continue.</p></div></div>
+    <div class="card"><img src="line-art/20-onboarding-completion.png" alt="Completion blueprint"><div class="body"><div class="num">20</div><h2>Onboarding · Completion</h2><p>Success wave · personalized feed · start.</p></div></div>
+    <div class="card"><img src="line-art/21-actor-page.png" alt="Actor blueprint"><div class="body"><div class="num">21</div><h2>Actor Page</h2><p>Portrait + verify · Known For · filmography.</p></div></div>
+    <div class="card"><img src="line-art/22-hashtag-page.png" alt="Hashtag blueprint"><div class="body"><div class="num">22</div><h2>Hashtag Page</h2><p>Topic header · feed · related topics.</p></div></div>
+    <div class="card"><img src="line-art/23-saved.png" alt="Saved blueprint"><div class="body"><div class="num">23</div><h2>Saved / Bookmarks</h2><p>Filters · saved cards · empty hint.</p></div></div>
+    <div class="card"><img src="line-art/24-followers.png" alt="Followers blueprint"><div class="body"><div class="num">24</div><h2>Followers</h2><p>Toggle · search · follow buttons.</p></div></div>
+    <div class="card"><img src="line-art/25-settings.png" alt="Settings blueprint"><div class="body"><div class="num">25</div><h2>Settings</h2><p>Groups · toggles · privacy + spoilers.</p></div></div>
+    <div class="card"><img src="line-art/26-moderation.png" alt="Moderation blueprint"><div class="body"><div class="num">26</div><h2>Moderation Queue</h2><p>Summary · severity · approve/remove.</p></div></div>
+    <div class="card"><img src="line-art/27-following.png" alt="Following blueprint"><div class="body"><div class="num">27</div><h2>Following List</h2><p>Toggle · search · followed rows.</p></div></div>
+    <div class="card"><img src="line-art/28-currently-watching.png" alt="Currently watching blueprint"><div class="body"><div class="num">28</div><h2>Currently Watching</h2><p>Tracked dramas · episode progress · add drama.</p></div></div>
+  </div>
+</section>
+
+<footer id="notes">
+  <strong>Source of truth:</strong> <code>Hallyu_Final_Integrated_Master_Build_Specification.md</code> — five-destination navigation (Home, Explore, Create, Notifications, Profile), episode-first social model, spoiler-safe conversations, currently-watching, communities, official content layer, and the purple/blue wave brand direction.
+  <br><br><strong>Build prompt:</strong> <code>HALLYU_BUILD_PROMPT.md</code> in the repo root is the hand-off prompt for a coding agent (or future you). It maps screens to features, states the non-negotiables, and defines done. Point any builder at this gallery + that prompt + the master spec.
+  <br><br><strong>Files:</strong> premium images in <code>blueprints/premium/</code>, technical blueprints (SVG + PNG) in <code>blueprints/line-art/</code>, gallery, generators in <code>blueprints/make_lineart.py</code> / <code>blueprints/render_lineart.js</code>, and <code>blueprints/README.md</code> for the full file map.
+</footer>
+</body>
+</html>
