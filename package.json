@@ -1,0 +1,12 @@
+{
+  "name": "hallyu-blueprints",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Reproducible renderer for the Hallyu technical blueprints (SVG -> PNG).",
+  "scripts": {
+    "render": "node blueprints/render_lineart.js"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}
