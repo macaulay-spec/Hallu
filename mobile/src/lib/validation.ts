@@ -64,6 +64,23 @@ export const ruleSchema = z.object({
   text: z.string().trim().min(1, 'Write the rule first').max(280, 'Rules are limited to 280 characters'),
 });
 
+export const reportSchema = z.object({
+  targetType: z.enum(['post', 'comment', 'user', 'community']),
+  targetId: z.string().min(1, 'Nothing to report'),
+  reason: z.enum(['spam', 'harassment', 'spoiler-abuse', 'misinformation', 'explicit', 'other']),
+  details: z.string().trim().max(500, 'Details are limited to 500 characters').optional(),
+});
+
+export const verificationSchema = z.object({
+  accountType: z.enum(['individual', 'organization']),
+  displayName: z.string().trim().min(2, 'Add the account name').max(60, 'Names are limited to 60 characters'),
+  proofDetails: z
+    .string()
+    .trim()
+    .min(10, 'Add links or references that prove this account is official')
+    .max(1000, 'Proof is limited to 1000 characters'),
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetInput = z.infer<typeof resetSchema>;
@@ -73,6 +90,8 @@ export type CommentInput = z.infer<typeof commentSchema>;
 export type WatchingInput = z.infer<typeof watchingSchema>;
 export type CommunityInput = z.infer<typeof communitySchema>;
 export type RuleInput = z.infer<typeof ruleSchema>;
+export type ReportInput = z.infer<typeof reportSchema>;
+export type VerificationInput = z.infer<typeof verificationSchema>;
 
 export function firstIssue(error: z.ZodError): string {
   return error.issues[0]?.message ?? 'Check your input and try again';

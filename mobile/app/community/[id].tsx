@@ -7,6 +7,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { track } from '@/lib/analytics';
 import { formatCount } from '@/lib/format';
 import { canModerate } from '@/lib/community';
+import type { ReportReason } from '@/services/reports';
 import {
   useCommunity,
   useCommunityPosts,
@@ -16,6 +17,7 @@ import {
   useRemoveCommunityPost,
   useRequestJoin,
 } from '@/hooks/useCommunities';
+import { useSubmitReport } from '@/hooks/useSafety';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { Button } from '@/components/ui/Button';
@@ -25,6 +27,7 @@ import { ErrorState } from '@/components/ui/ErrorState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { NotConfiguredState } from '@/components/ui/NotConfiguredState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { ReportDialog } from '@/components/ReportDialog';
 import { PostCard } from '@/components/PostCard';
 
 // Community Page (blueprint 15).
@@ -39,10 +42,12 @@ export default function CommunityPage(): ReactNode {
   const leave = useLeaveCommunity(id);
   const pin = usePinToggle(id);
   const remove = useRemoveCommunityPost(id);
+  const report = useSubmitReport();
   const [error, setError] = useState<string | null>(null);
   const [requested, setRequested] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<string | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const data = community.data && community.data.ok ? community.data.data : null;
   const items = (posts.data?.pages ?? []).flatMap((page) =>
@@ -91,6 +96,21 @@ export default function CommunityPage(): ReactNode {
     setError(null);
     const result = await remove.mutateAsync(postId);
     if (!result.ok) setError(result.error.message);
+  }
+
+  async function handleReport(reason: ReportReason, details: string): Promise<void> {
+    setError(null);
+    const result = await report.mutateAsync({
+      targetType: 'community',
+      targetId: id,
+      reason,
+      details: details.length > 0 ? details : undefined,
+    });
+    if (result.ok) {
+      setReportOpen(false);
+    } else {
+      setError(result.error.message);
+    }
   }
 
   if (community.isPending) {
@@ -168,6 +188,7 @@ export default function CommunityPage(): ReactNode {
           loading={join.isPending || request.isPending}
         />
       )}
+      <Button title="Report community" variant="ghost" onPress={() => setReportOpen(true)} />
       {error ? (
         <Text accessibilityRole="alert" style={[styles.error, { color: theme.colors.danger }]}>
           {error}
@@ -260,6 +281,13 @@ export default function CommunityPage(): ReactNode {
         destructive
         onConfirm={() => void handleRemove()}
         onCancel={() => setPendingRemove(null)}
+      />
+      <ReportDialog
+        visible={reportOpen}
+        targetLabel={data.name}
+        busy={report.isPending}
+        onSubmit={(reason, details) => void handleReport(reason, details)}
+        onClose={() => setReportOpen(false)}
       />
     </Screen>
   );

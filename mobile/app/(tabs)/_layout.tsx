@@ -3,6 +3,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import type { ColorValue } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useUnreadCount } from '@/hooks/useNotifications';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -15,6 +16,11 @@ function icon(name: IconName, focusedName: IconName) {
 export default function TabsLayout(): ReactNode {
   const theme = useTheme();
   const router = useRouter();
+  const unread = useUnreadCount();
+  const badge =
+    unread.data && unread.data.ok && unread.data.data.count > 0
+      ? unread.data.data.count
+      : undefined;
   return (
     <Tabs
       screenOptions={{
@@ -51,6 +57,7 @@ export default function TabsLayout(): ReactNode {
         options={{
           title: 'Notifications',
           tabBarIcon: icon('notifications-outline', 'notifications'),
+          tabBarBadge: badge,
         }}
       />
       <Tabs.Screen

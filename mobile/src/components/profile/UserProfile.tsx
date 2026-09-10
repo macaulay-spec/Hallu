@@ -116,29 +116,58 @@ export function UserProfile({ username, isOwn = false, showBack = false }: UserP
         </View>
         <View style={styles.actions}>
           {isOwn ? (
-            <View style={styles.ownActions}>
-              <View style={styles.ownAction}>
-                <Button
-                  title="Edit profile"
-                  variant="secondary"
-                  onPress={() => router.push('/edit-profile')}
-                />
+            <View style={styles.actions}>
+              <View style={styles.ownActions}>
+                <View style={styles.ownAction}>
+                  <Button
+                    title="Edit profile"
+                    variant="secondary"
+                    onPress={() => router.push('/edit-profile')}
+                  />
+                </View>
+                <View style={styles.ownAction}>
+                  <Button
+                    title="Currently Watching"
+                    variant="secondary"
+                    onPress={() => router.push('/watching')}
+                  />
+                </View>
               </View>
-              <View style={styles.ownAction}>
-            <Button
-              title="Currently Watching"
-              variant="secondary"
-              onPress={() => router.push('/watching')}
-            />
-            <Button
-              title="Communities"
-              variant="secondary"
-              onPress={() => router.push('/communities')}
-            />
-          </View>
+              <View style={styles.ownActions}>
+                <View style={styles.ownAction}>
+                  <Button
+                    title="Communities"
+                    variant="secondary"
+                    onPress={() => router.push('/communities')}
+                  />
+                </View>
+                <View style={styles.ownAction}>
+                  <Button
+                    title="Safety"
+                    variant="secondary"
+                    onPress={() => router.push('/safety')}
+                  />
+                </View>
+              </View>
+              <Button
+                title="Verification"
+                variant="secondary"
+                onPress={() => router.push('/verification/request')}
+              />
             </View>
           ) : (
-            <FollowButton username={username} following={false} />
+            <View style={styles.ownActions}>
+              <View style={styles.ownAction}>
+                <FollowButton username={username} following={false} />
+              </View>
+              <View style={styles.ownAction}>
+                <Button
+                  title="Safety"
+                  variant="secondary"
+                  onPress={() => router.push(`/user/${username}/safety`)}
+                />
+              </View>
+            </View>
           )}
         </View>
         <SegmentedControl

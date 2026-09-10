@@ -3,8 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '@/theme/ThemeProvider';
+import type { ReportReason } from '@/services/reports';
 import { usePost, useDeletePost } from '@/hooks/usePosts';
 import { useOwnProfile } from '@/hooks/useProfile';
+import { useSubmitReport } from '@/hooks/useSafety';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +14,7 @@ import { LoadingState } from '@/components/ui/LoadingState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { NotConfiguredState } from '@/components/ui/NotConfiguredState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { ReportDialog } from '@/components/ReportDialog';
 import { PostCard } from '@/components/PostCard';
 import { CommentThread } from '@/components/CommentThread';
 
@@ -22,8 +25,10 @@ export default function PostDetail(): ReactNode {
   const { id } = useLocalSearchParams<{ id: string }>();
   const query = usePost(id);
   const remove = useDeletePost();
+  const report = useSubmitReport();
   const own = useOwnProfile();
   const [confirming, setConfirming] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const viewerUsername =
@@ -35,6 +40,21 @@ export default function PostDetail(): ReactNode {
     const result = await remove.mutateAsync(id);
     if (result.ok) {
       router.back();
+    } else {
+      setError(result.error.message);
+    }
+  }
+
+  async function handleReport(reason: ReportReason, details: string): Promise<void> {
+    setError(null);
+    const result = await report.mutateAsync({
+      targetType: 'post',
+      targetId: id,
+      reason,
+      details: details.length > 0 ? details : undefined,
+    });
+    if (result.ok) {
+      setReportOpen(false);
     } else {
       setError(result.error.message);
     }
@@ -58,7 +78,9 @@ export default function PostDetail(): ReactNode {
           {viewerUsername !== undefined &&
           query.data.data.author.username === viewerUsername ? (
             <Button title="Delete post" variant="danger" onPress={() => setConfirming(true)} />
-          ) : null}
+          ) : (
+            <Button title="Report post" variant="secondary" onPress={() => setReportOpen(true)} />
+          )}
           {error ? (
             <Text accessibilityRole="alert" style={[styles.error, { color: theme.colors.danger }]}>
               {error}
@@ -75,6 +97,13 @@ export default function PostDetail(): ReactNode {
         destructive
         onConfirm={() => void handleDelete()}
         onCancel={() => setConfirming(false)}
+      />
+      <ReportDialog
+        visible={reportOpen}
+        targetLabel="post"
+        busy={report.isPending}
+        onSubmit={(reason, details) => void handleReport(reason, details)}
+        onClose={() => setReportOpen(false)}
       />
     </Screen>
   );

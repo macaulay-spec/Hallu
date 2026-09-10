@@ -8,8 +8,10 @@ import { buildCommentTree } from '@/lib/comments';
 import type { CommentNode } from '@/lib/comments';
 import { commentSchema, firstIssue } from '@/lib/validation';
 import type { Comment } from '@/services/comments';
+import type { ReportReason } from '@/services/reports';
 import { useComments, useCreateComment, useDeleteComment } from '@/hooks/useComments';
 import { useToggleCommentLike } from '@/hooks/useReactions';
+import { useSubmitReport } from '@/hooks/useSafety';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
@@ -19,6 +21,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { NotConfiguredState } from '@/components/ui/NotConfiguredState';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { ParsedText } from '@/components/ParsedText';
+import { ReportDialog } from '@/components/ReportDialog';
 
 interface CommentThreadProps {
   postId: string;
@@ -36,10 +39,12 @@ export function CommentThread({ postId, viewerUsername }: CommentThreadProps): R
   const create = useCreateComment(postId);
   const remove = useDeleteComment(postId);
   const like = useToggleCommentLike(postId);
+  const report = useSubmitReport();
   const [draft, setDraft] = useState('');
   const [replyTo, setReplyTo] = useState<ReplyTarget | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [pendingReport, setPendingReport] = useState<string | null>(null);
 
   const firstPage = query.data?.pages[0];
   const items = (query.data?.pages ?? []).flatMap((page) =>
@@ -81,6 +86,23 @@ export function CommentThread({ postId, viewerUsername }: CommentThreadProps): R
     setError(null);
     const result = await remove.mutateAsync(commentId);
     if (!result.ok) setError(result.error.message);
+  }
+
+  async function handleReport(reason: ReportReason, details: string): Promise<void> {
+    if (!pendingReport) return;
+    const commentId = pendingReport;
+    setError(null);
+    const result = await report.mutateAsync({
+      targetType: 'comment',
+      targetId: commentId,
+      reason,
+      details: details.length > 0 ? details : undefined,
+    });
+    if (result.ok) {
+      setPendingReport(null);
+    } else {
+      setError(result.error.message);
+    }
   }
 
   function renderNode(node: CommentNode, depth: number): ReactNode {
@@ -134,7 +156,16 @@ export function CommentThread({ postId, viewerUsername }: CommentThreadProps): R
                 >
                   <Text style={[styles.reply, { color: theme.colors.danger }]}>Delete</Text>
                 </Pressable>
-              ) : null}
+              ) : (
+                <Pressable
+                  onPress={() => setPendingReport(comment.id)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Report comment"
+                  style={styles.miniAction}
+                >
+                  <Text style={[styles.reply, { color: theme.colors.textMuted }]}>Report</Text>
+                </Pressable>
+              )}
             </View>
             {node.replies.map((reply) => renderNode(reply, depth + 1))}
           </View>
@@ -213,6 +244,13 @@ export function CommentThread({ postId, viewerUsername }: CommentThreadProps): R
         destructive
         onConfirm={() => void handleDelete()}
         onCancel={() => setPendingDelete(null)}
+      />
+      <ReportDialog
+        visible={pendingReport !== null}
+        targetLabel="comment"
+        busy={report.isPending}
+        onSubmit={(reason, details) => void handleReport(reason, details)}
+        onClose={() => setPendingReport(null)}
       />
     </View>
   );
