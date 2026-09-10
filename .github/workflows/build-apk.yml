@@ -1,0 +1,70 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'EAS build profile (preview = installable APK, production = Play Store AAB)'
+        type: choice
+        options: [preview, production]
+        default: preview
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check EXPO_TOKEN
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "::error::EXPO_TOKEN secret is not set. Follow docs/EAS_APK_BUILD.md to create it."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: EAS build (Android)
+        run: eas build --platform android --profile ${{ inputs.profile }} --non-interactive --json > build-output.json
+
+      - name: Attach binary to run
+        run: |
+          APK_URL=$(jq -r '.artifacts.applicationArchiveUrl // empty' build-output.json)
+          BUILD_URL=$(jq -r '.artifacts.buildUrl // empty' build-output.json)
+          {
+            echo "## 🤖 Android build (${{ inputs.profile }})"
+            echo ""
+            if [ -n "$BUILD_URL" ]; then echo "- 🔗 [EAS build page]($BUILD_URL)"; fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -z "$APK_URL" ]; then
+            echo "::warning::Binary URL not in build output; download it from the EAS dashboard instead."
+            exit 0
+          fi
+          case "$APK_URL" in
+            *.aab) OUT=hallyu.aab ;;
+            *) OUT=hallyu.apk ;;
+          esac
+          curl -L --fail -o "$OUT" "$APK_URL"
+          echo "- 📦 Binary attached below under Artifacts ($OUT)" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hallyu-android-${{ inputs.profile }}
+          path: mobile/hallyu.*
+          if-no-files-found: warn
