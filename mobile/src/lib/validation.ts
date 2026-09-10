@@ -49,6 +49,21 @@ export const watchingSchema = z.object({
   episode: z.number().int().min(0, 'Episode cannot be negative'),
 });
 
+export const communitySchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(3, 'Names need at least 3 characters')
+    .max(30, 'Names are limited to 30 characters')
+    .regex(/^[A-Za-z0-9_ -]+$/, 'Letters, numbers, spaces, _ and - only'),
+  description: z.string().trim().max(280, 'Descriptions are limited to 280 characters'),
+  visibility: z.enum(['public', 'private']),
+});
+
+export const ruleSchema = z.object({
+  text: z.string().trim().min(1, 'Write the rule first').max(280, 'Rules are limited to 280 characters'),
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetInput = z.infer<typeof resetSchema>;
@@ -56,6 +71,8 @@ export type PostInput = z.infer<typeof postSchema>;
 export type ProfileInput = z.infer<typeof profileSchema>;
 export type CommentInput = z.infer<typeof commentSchema>;
 export type WatchingInput = z.infer<typeof watchingSchema>;
+export type CommunityInput = z.infer<typeof communitySchema>;
+export type RuleInput = z.infer<typeof ruleSchema>;
 
 export function firstIssue(error: z.ZodError): string {
   return error.issues[0]?.message ?? 'Check your input and try again';

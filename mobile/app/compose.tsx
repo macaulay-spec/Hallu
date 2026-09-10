@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '@/theme/ThemeProvider';
 import { track } from '@/lib/analytics';
@@ -24,11 +24,12 @@ const MAX_CHARS = 5000;
 const MAX_IMAGES = 4;
 
 // Create Composer (blueprint 09): text, category, drama/episode tag,
-// hashtags, spoiler toggle, media, preview, publish.
+// community target, hashtags, spoiler toggle, media, preview, publish.
 export default function Compose(): ReactNode {
   const theme = useTheme();
   const router = useRouter();
   const create = useCreatePost();
+  const params = useLocalSearchParams<{ communityId?: string; communityName?: string }>();
   const [text, setText] = useState('');
   const [category, setCategory] = useState<PostCategory>('Discussion');
   const [spoiler, setSpoiler] = useState(false);
@@ -75,6 +76,7 @@ export default function Compose(): ReactNode {
       mediaLocalUris: images,
       dramaId: tag?.dramaId,
       episodeId: tag?.episodeId,
+      communityId: typeof params.communityId === 'string' ? params.communityId : undefined,
       spoiler,
     });
     setBusy(false);
@@ -93,6 +95,11 @@ export default function Compose(): ReactNode {
         <Text style={[styles.title, { color: theme.colors.text }]}>New Post</Text>
         <Button title="Post" onPress={() => void handlePublish()} loading={busy} />
       </View>
+      {typeof params.communityName === 'string' && params.communityName.length > 0 ? (
+        <View style={styles.community}>
+          <Chip label={`Posting to ${params.communityName}`} selected />
+        </View>
+      ) : null}
       <TextField
         label="Post"
         value={text}
@@ -165,6 +172,9 @@ export default function Compose(): ReactNode {
           {category.toUpperCase()}
           {spoiler ? ' · SPOILER' : ''}
           {tag ? ` · ${tag.title}${tag.episodeNumber !== undefined ? ` Ep ${tag.episodeNumber}` : ''}` : ''}
+          {typeof params.communityName === 'string' && params.communityName.length > 0
+            ? ` · ${params.communityName}`
+            : ''}
         </Text>
         <Text style={[styles.previewText, { color: theme.colors.text }]}>
           {text.length > 0 ? text : 'Your post preview appears here.'}
@@ -194,6 +204,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
+  },
+  community: {
+    flexDirection: 'row',
+    marginBottom: 12,
   },
   counter: {
     fontSize: 12,

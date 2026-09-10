@@ -125,12 +125,17 @@ export function UserProfile({ username, isOwn = false, showBack = false }: UserP
                 />
               </View>
               <View style={styles.ownAction}>
-                <Button
-                  title="Currently Watching"
-                  variant="secondary"
-                  onPress={() => router.push('/watching')}
-                />
-              </View>
+            <Button
+              title="Currently Watching"
+              variant="secondary"
+              onPress={() => router.push('/watching')}
+            />
+            <Button
+              title="Communities"
+              variant="secondary"
+              onPress={() => router.push('/communities')}
+            />
+          </View>
             </View>
           ) : (
             <FollowButton username={username} following={false} />

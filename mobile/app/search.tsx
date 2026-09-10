@@ -137,7 +137,13 @@ export default function Search(): ReactNode {
                   />
                 ))}
                 {results.communities.map((community) => (
-                  <View key={community.id} style={styles.actorRow}>
+                  <Pressable
+                    key={community.id}
+                    onPress={() => router.push(`/community/${community.id}`)}
+                    accessibilityRole="link"
+                    accessibilityLabel={community.name}
+                    style={styles.actorRow}
+                  >
                     <Avatar uri={community.avatarUrl} name={community.name} size={44} />
                     <View>
                       <Text style={[styles.actorName, { color: theme.colors.text }]}>
@@ -147,7 +153,7 @@ export default function Search(): ReactNode {
                         Community · {community.memberCount} members
                       </Text>
                     </View>
-                  </View>
+                  </Pressable>
                 ))}
               </View>
             ) : null}

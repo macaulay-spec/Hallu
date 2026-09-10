@@ -6,8 +6,9 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { useAuth } from '@/hooks/useAuth';
 import { useTrendingHashtags, useTrendingPosts } from '@/hooks/useTrending';
 import { useDramas } from '@/hooks/useDramas';
-import { useNotConfigured } from '@/hooks/useBackendQuery';
+import { useCommunities } from '@/hooks/useCommunities';
 import { Screen } from '@/components/ui/Screen';
+import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ErrorState } from '@/components/ui/ErrorState';
@@ -16,9 +17,10 @@ import { NotConfiguredState } from '@/components/ui/NotConfiguredState';
 import { PreviewBanner } from '@/components/ui/PreviewBanner';
 import { PostCard } from '@/components/PostCard';
 import { DramaCard } from '@/components/drama/DramaCard';
+import { CommunityCard } from '@/components/community/CommunityCard';
 
 // Explore (blueprint 08): search entry, trending topics, Current Wave,
-// Trending Now, Popular Communities (communities wire up in Phase 4).
+// Trending Now, Popular Communities.
 export default function Explore(): ReactNode {
   const theme = useTheme();
   const router = useRouter();
@@ -26,13 +28,16 @@ export default function Explore(): ReactNode {
   const tags = useTrendingHashtags(8);
   const airing = useDramas({ status: 'airing' });
   const trending = useTrendingPosts();
-  const communities = useNotConfigured('Popular communities');
+  const communities = useCommunities({});
 
   const tagItems = tags.data && tags.data.ok ? tags.data.data : null;
   const airingItems = (airing.data?.pages ?? []).flatMap((page) =>
     page.ok ? page.data.items : [],
   );
   const trendingItems = (trending.data?.pages ?? []).flatMap((page) =>
+    page.ok ? page.data.items : [],
+  );
+  const communityItems = (communities.data?.pages ?? []).flatMap((page) =>
     page.ok ? page.data.items : [],
   );
 
@@ -112,11 +117,23 @@ export default function Explore(): ReactNode {
       <Text style={[styles.section, { color: theme.colors.text }]}>Popular Communities</Text>
       {communities.isPending ? (
         <LoadingState label="Loading communities…" />
-      ) : (
-        <NotConfiguredState
-          feature="Popular communities"
-          onRetry={() => void communities.refetch()}
+      ) : communities.isError ? (
+        <ErrorState message="Something went wrong." onRetry={() => void communities.refetch()} />
+      ) : !communities.data?.pages[0]?.ok ? (
+        <NotConfiguredState feature="Popular communities" onRetry={() => void communities.refetch()} />
+      ) : communityItems.length === 0 ? (
+        <EmptyState
+          icon="people-outline"
+          title="No communities yet"
+          message="Be the first to start one."
         />
+      ) : (
+        <View style={styles.list}>
+          {communityItems.slice(0, 3).map((community) => (
+            <CommunityCard key={community.id} community={community} />
+          ))}
+          <Button title="See all communities" variant="secondary" onPress={() => router.push('/communities')} />
+        </View>
       )}
     </Screen>
   );

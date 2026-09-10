@@ -49,6 +49,7 @@ export interface CreatePostInput {
   mediaLocalUris: string[];
   dramaId?: string;
   episodeId?: string;
+  communityId?: string;
   spoiler: boolean;
 }
 
