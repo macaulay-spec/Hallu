@@ -33,6 +33,8 @@ export default function PostDetail(): ReactNode {
 
   const viewerUsername =
     own.data && own.data.ok ? own.data.data.username : undefined;
+  const post = query.data && query.data.ok ? query.data.data : null;
+  const mine = post !== null && viewerUsername !== undefined && post.author.username === viewerUsername;
 
   async function handleDelete(): Promise<void> {
     setConfirming(false);
@@ -70,17 +72,23 @@ export default function PostDetail(): ReactNode {
           message="Something went wrong loading this post."
           onRetry={() => void query.refetch()}
         />
-      ) : !query.data || !query.data.ok ? (
+      ) : !post ? (
         <NotConfiguredState feature="Post" onRetry={() => void query.refetch()} />
       ) : (
         <View style={styles.wrap}>
-          <PostCard post={query.data.data} detail />
-          {viewerUsername !== undefined &&
-          query.data.data.author.username === viewerUsername ? (
+          <PostCard post={post} detail />
+          {mine ? (
             <Button title="Delete post" variant="danger" onPress={() => setConfirming(true)} />
           ) : (
             <Button title="Report post" variant="secondary" onPress={() => setReportOpen(true)} />
           )}
+          {post.category === 'Meme' ? (
+            <Button
+              title="Remix this meme"
+              variant="secondary"
+              onPress={() => router.push(`/ai/remix?postId=${id}`)}
+            />
+          ) : null}
           {error ? (
             <Text accessibilityRole="alert" style={[styles.error, { color: theme.colors.danger }]}>
               {error}

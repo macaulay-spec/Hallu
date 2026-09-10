@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useTrendingHashtags, useTrendingPosts } from '@/hooks/useTrending';
 import { useDramas } from '@/hooks/useDramas';
 import { useCommunities } from '@/hooks/useCommunities';
+import { useRecommendations } from '@/hooks/useAi';
 import { Screen } from '@/components/ui/Screen';
 import { Button } from '@/components/ui/Button';
 import { Chip } from '@/components/ui/Chip';
@@ -20,13 +21,14 @@ import { DramaCard } from '@/components/drama/DramaCard';
 import { CommunityCard } from '@/components/community/CommunityCard';
 
 // Explore (blueprint 08): search entry, trending topics, Current Wave,
-// Trending Now, Popular Communities.
+// Recommended, Trending Now, Popular Communities.
 export default function Explore(): ReactNode {
   const theme = useTheme();
   const router = useRouter();
   const { previewMode } = useAuth();
   const tags = useTrendingHashtags(8);
   const airing = useDramas({ status: 'airing' });
+  const recommended = useRecommendations(6);
   const trending = useTrendingPosts();
   const communities = useCommunities({});
 
@@ -34,6 +36,8 @@ export default function Explore(): ReactNode {
   const airingItems = (airing.data?.pages ?? []).flatMap((page) =>
     page.ok ? page.data.items : [],
   );
+  const recommendedItems =
+    recommended.data && recommended.data.ok ? recommended.data.data : null;
   const trendingItems = (trending.data?.pages ?? []).flatMap((page) =>
     page.ok ? page.data.items : [],
   );
@@ -90,6 +94,29 @@ export default function Explore(): ReactNode {
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.rail}>
           {airingItems.map((drama) => (
+            <View key={drama.id} style={styles.railItem}>
+              <DramaCard drama={drama} />
+            </View>
+          ))}
+        </ScrollView>
+      )}
+
+      <Text style={[styles.section, { color: theme.colors.text }]}>Recommended for you</Text>
+      {recommended.isPending ? (
+        <LoadingState label="Loading recommendations…" />
+      ) : recommended.isError ? (
+        <ErrorState message="Something went wrong." onRetry={() => void recommended.refetch()} />
+      ) : !recommendedItems ? (
+        <NotConfiguredState feature="Recommendations" onRetry={() => void recommended.refetch()} />
+      ) : recommendedItems.length === 0 ? (
+        <EmptyState
+          icon="sparkles-outline"
+          title="No recommendations yet"
+          message="Follow dramas to tune your picks."
+        />
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.rail}>
+          {recommendedItems.map((drama) => (
             <View key={drama.id} style={styles.railItem}>
               <DramaCard drama={drama} />
             </View>
