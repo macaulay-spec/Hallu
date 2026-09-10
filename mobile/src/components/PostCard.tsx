@@ -21,7 +21,8 @@ interface PostCardProps {
 }
 
 // Feed item (spec §51): avatar, handle, timestamp, drama/episode context,
-// text, media, spoiler overlay, action row.
+// text, media, spoiler overlay, action row. The context chip deep-links to
+// the drama hub; the body opens post detail.
 export function PostCard({ post, detail = false }: PostCardProps): ReactNode {
   const theme = useTheme();
   const router = useRouter();
@@ -39,6 +40,10 @@ export function PostCard({ post, detail = false }: PostCardProps): ReactNode {
 
   function openDetail(): void {
     if (!detail) router.push(`/post/${post.id}`);
+  }
+
+  function openDrama(): void {
+    if (post.dramaTag) router.push(`/drama/${post.dramaTag.dramaId}`);
   }
 
   async function handleRepost(): Promise<void> {
@@ -66,31 +71,51 @@ export function PostCard({ post, detail = false }: PostCardProps): ReactNode {
 
   return (
     <Card>
-      <Pressable onPress={openDetail} accessibilityRole={detail ? undefined : 'button'} accessibilityLabel={detail ? undefined : `Open post by ${post.author.username}`}>
-        <View style={styles.header}>
+      <View style={styles.header}>
+        <Pressable
+          onPress={() => router.push(`/user/${post.author.username}`)}
+          accessibilityRole="link"
+          accessibilityLabel={`View ${post.author.username}`}
+        >
+          <Avatar uri={post.author.avatarUrl} name={post.author.displayName} size={40} />
+        </Pressable>
+        <View style={styles.headerText}>
           <Pressable
             onPress={() => router.push(`/user/${post.author.username}`)}
             accessibilityRole="link"
             accessibilityLabel={`View ${post.author.username}`}
           >
-            <Avatar uri={post.author.avatarUrl} name={post.author.displayName} size={40} />
-          </Pressable>
-          <View style={styles.headerText}>
             <Text style={[styles.name, { color: theme.colors.text }]}>
               {post.author.displayName}{' '}
               <Text style={{ color: theme.colors.textMuted }}>@{post.author.username}</Text>
             </Text>
+          </Pressable>
+          {post.dramaTag ? (
+            <Pressable
+              onPress={openDrama}
+              accessibilityRole="link"
+              accessibilityLabel={`Open ${post.dramaTag.title}`}
+            >
+              <Text style={[styles.context, { color: theme.colors.brandBlue }]}>{context}</Text>
+            </Pressable>
+          ) : (
             <Text style={[styles.context, { color: theme.colors.textMuted }]}>{context}</Text>
-          </View>
+          )}
         </View>
-        <View style={styles.badges}>
-          <Text style={[styles.category, { color: theme.colors.brandBlue }]}>
-            {post.category.toUpperCase()}
-          </Text>
-          {post.spoilerEpisode !== null ? (
-            <Text style={[styles.spoiler, { color: theme.colors.accent }]}>SPOILER</Text>
-          ) : null}
-        </View>
+      </View>
+      <View style={styles.badges}>
+        <Text style={[styles.category, { color: theme.colors.brandBlue }]}>
+          {post.category.toUpperCase()}
+        </Text>
+        {post.spoilerEpisode !== null ? (
+          <Text style={[styles.spoiler, { color: theme.colors.accent }]}>SPOILER</Text>
+        ) : null}
+      </View>
+      <Pressable
+        onPress={openDetail}
+        accessibilityRole={detail ? undefined : 'button'}
+        accessibilityLabel={detail ? undefined : `Open post by ${post.author.username}`}
+      >
         <SpoilerGate spoilerEpisode={post.spoilerEpisode}>
           <ParsedText text={post.text} />
           {post.mediaUrls.length > 0 ? (

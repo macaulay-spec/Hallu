@@ -44,12 +44,18 @@ export const commentSchema = z.object({
   text: z.string().trim().min(1, 'Write a reply first').max(2000, 'Replies are limited to 2000 characters'),
 });
 
+export const watchingSchema = z.object({
+  dramaId: z.string().min(1, 'Pick a drama first'),
+  episode: z.number().int().min(0, 'Episode cannot be negative'),
+});
+
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetInput = z.infer<typeof resetSchema>;
 export type PostInput = z.infer<typeof postSchema>;
 export type ProfileInput = z.infer<typeof profileSchema>;
 export type CommentInput = z.infer<typeof commentSchema>;
+export type WatchingInput = z.infer<typeof watchingSchema>;
 
 export function firstIssue(error: z.ZodError): string {
   return error.issues[0]?.message ?? 'Check your input and try again';

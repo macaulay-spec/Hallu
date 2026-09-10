@@ -3,6 +3,22 @@ const tseslint = require('typescript-eslint');
 
 module.exports = [
   { ignores: ['dist/**', '.expo/**', 'coverage/**'] },
+  {
+    files: ['**/__tests__/**/*'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        jest: 'readonly',
+      },
+    },
+  },
   ...expo,
   {
     plugins: { '@typescript-eslint': tseslint.plugin },

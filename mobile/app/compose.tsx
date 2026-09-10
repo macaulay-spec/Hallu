@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/Button';
 import { TextField } from '@/components/ui/TextField';
 import { Chip } from '@/components/ui/Chip';
 import { Card } from '@/components/ui/Card';
+import { DramaTagPicker } from '@/components/DramaTagPicker';
+import type { DramaTagSelection } from '@/components/DramaTagPicker';
 
 const MAX_CHARS = 5000;
 const MAX_IMAGES = 4;
@@ -31,6 +33,7 @@ export default function Compose(): ReactNode {
   const [category, setCategory] = useState<PostCategory>('Discussion');
   const [spoiler, setSpoiler] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [tag, setTag] = useState<DramaTagSelection | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -70,6 +73,8 @@ export default function Compose(): ReactNode {
       text: parsed.data.text,
       category: parsed.data.category,
       mediaLocalUris: images,
+      dramaId: tag?.dramaId,
+      episodeId: tag?.episodeId,
       spoiler,
     });
     setBusy(false);
@@ -109,16 +114,12 @@ export default function Compose(): ReactNode {
           </View>
         ))}
       </ScrollView>
-      <Card>
-        <Text style={[styles.tagNote, { color: theme.colors.textDim }]}>
-          Drama and episode tags attach automatically once a backend is linked — browsing
-          dramas needs live data, so there is nothing to pick yet.
-        </Text>
-      </Card>
+      <Text style={[styles.section, { color: theme.colors.text }]}>Drama tag</Text>
+      <DramaTagPicker selection={tag} onSelect={setTag} />
       {hashtags.length > 0 ? (
         <View style={styles.tags}>
-          {hashtags.map((tag) => (
-            <Chip key={tag} label={`#${tag}`} />
+          {hashtags.map((hashtag) => (
+            <Chip key={hashtag} label={`#${hashtag}`} />
           ))}
         </View>
       ) : null}
@@ -163,6 +164,7 @@ export default function Compose(): ReactNode {
         <Text style={[styles.previewMeta, { color: theme.colors.textMuted }]}>
           {category.toUpperCase()}
           {spoiler ? ' · SPOILER' : ''}
+          {tag ? ` · ${tag.title}${tag.episodeNumber !== undefined ? ` Ep ${tag.episodeNumber}` : ''}` : ''}
         </Text>
         <Text style={[styles.previewText, { color: theme.colors.text }]}>
           {text.length > 0 ? text : 'Your post preview appears here.'}
@@ -209,10 +211,6 @@ const styles = StyleSheet.create({
   },
   pill: {
     marginRight: 8,
-  },
-  tagNote: {
-    fontSize: 14,
-    lineHeight: 20,
   },
   tags: {
     flexDirection: 'row',

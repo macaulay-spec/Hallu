@@ -116,11 +116,22 @@ export function UserProfile({ username, isOwn = false, showBack = false }: UserP
         </View>
         <View style={styles.actions}>
           {isOwn ? (
-            <Button
-              title="Edit profile"
-              variant="secondary"
-              onPress={() => router.push('/edit-profile')}
-            />
+            <View style={styles.ownActions}>
+              <View style={styles.ownAction}>
+                <Button
+                  title="Edit profile"
+                  variant="secondary"
+                  onPress={() => router.push('/edit-profile')}
+                />
+              </View>
+              <View style={styles.ownAction}>
+                <Button
+                  title="Currently Watching"
+                  variant="secondary"
+                  onPress={() => router.push('/watching')}
+                />
+              </View>
+            </View>
           ) : (
             <FollowButton username={username} following={false} />
           )}
@@ -255,5 +266,12 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 8,
+  },
+  ownActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  ownAction: {
+    flex: 1,
   },
 });
