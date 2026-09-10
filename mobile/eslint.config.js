@@ -2,6 +2,7 @@ const expo = require('eslint-config-expo/flat');
 const tseslint = require('typescript-eslint');
 
 module.exports = [
+  { ignores: ['dist/**', '.expo/**', 'coverage/**'] },
   ...expo,
   {
     plugins: { '@typescript-eslint': tseslint.plugin },
