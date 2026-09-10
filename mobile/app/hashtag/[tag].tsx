@@ -1,30 +1,33 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/theme/ThemeProvider';
 import { formatCount } from '@/lib/format';
-import { useHashtag, useHashtagPosts } from '@/hooks/useHashtag';
+import { useHashtag, useHashtagPosts, useRelatedHashtags } from '@/hooks/useHashtag';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { Chip } from '@/components/ui/Chip';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { NotConfiguredState } from '@/components/ui/NotConfiguredState';
 import { PostCard } from '@/components/PostCard';
 
-// Hashtag Page, basic (blueprint 22). Related topics + trending arrive
-// with Phase 3 discovery.
+// Hashtag Page (blueprint 22): topic header, feed, related topics.
 export default function HashtagScreen(): ReactNode {
   const theme = useTheme();
+  const router = useRouter();
   const { tag } = useLocalSearchParams<{ tag: string }>();
   const info = useHashtag(tag);
   const feed = useHashtagPosts(tag);
+  const related = useRelatedHashtags(tag);
 
   const firstPage = feed.data?.pages[0];
   const items = (feed.data?.pages ?? []).flatMap((page) =>
     page.ok ? page.data.items : [],
   );
+  const relatedTags = related.data && related.data.ok ? related.data.data : null;
 
   return (
     <Screen>
@@ -42,6 +45,21 @@ export default function HashtagScreen(): ReactNode {
           ) : null}
         </View>
       ) : null}
+      {relatedTags !== null && relatedTags.length > 0 ? (
+        <View style={styles.related}>
+          <Text style={[styles.relatedTitle, { color: theme.colors.text }]}>Related topics</Text>
+          <View style={styles.chips}>
+            {relatedTags.map((relatedTag) => (
+              <Chip
+                key={relatedTag}
+                label={`#${relatedTag}`}
+                onPress={() => router.push(`/hashtag/${encodeURIComponent(relatedTag)}`)}
+              />
+            ))}
+          </View>
+        </View>
+      ) : null}
+      <Text style={[styles.feedTitle, { color: theme.colors.text }]}>Feed</Text>
       <View style={styles.list}>
         {feed.isPending ? (
           <LoadingState label="Loading hashtag feed…" />
@@ -90,6 +108,24 @@ const styles = StyleSheet.create({
   desc: {
     fontSize: 14,
     textAlign: 'center',
+  },
+  related: {
+    gap: 8,
+    marginBottom: 12,
+  },
+  relatedTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  chips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  feedTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 8,
   },
   list: {
     flex: 1,

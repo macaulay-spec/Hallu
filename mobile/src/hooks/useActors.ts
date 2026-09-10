@@ -1,11 +1,21 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   followActor,
   getActor,
   listActorFilmography,
+  listActors,
   listDramaCast,
   unfollowActor,
 } from '@/services/actors';
+
+export function useActors(query?: string) {
+  return useInfiniteQuery({
+    queryKey: ['actors', query ?? ''],
+    queryFn: ({ pageParam }) => listActors({ query, cursor: pageParam }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => (lastPage.ok ? lastPage.data.nextCursor : undefined),
+  });
+}
 
 export function useActor(actorId: string) {
   return useQuery({

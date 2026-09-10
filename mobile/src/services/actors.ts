@@ -1,4 +1,4 @@
-import type { Result } from './core';
+import type { Page, PageParams, Result } from './core';
 import { notConfigured } from './core';
 
 export interface ActorSummary {
@@ -27,6 +27,15 @@ export interface FilmographyEntry {
   posterUrl: string | null;
   role: string | null;
   year: number | null;
+}
+
+export interface ListActorsParams extends PageParams {
+  query?: string;
+}
+
+export async function listActors(params: ListActorsParams): Promise<Result<Page<ActorSummary>>> {
+  void params;
+  return notConfigured<Page<ActorSummary>>('Actors');
 }
 
 export async function getActor(actorId: string): Promise<Result<Actor>> {

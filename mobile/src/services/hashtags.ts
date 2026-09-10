@@ -22,3 +22,8 @@ export async function listHashtagPosts(
   void params;
   return notConfigured<Page<Post>>('Hashtag feed');
 }
+
+export async function listRelatedHashtags(tag: string): Promise<Result<string[]>> {
+  void tag;
+  return notConfigured<string[]>('Related topics');
+}
