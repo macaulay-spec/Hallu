@@ -40,6 +40,12 @@ python3 scripts/preview-server.py               # serves dist/ on :8130
 
 Typecheck 0 · lint clean · tests green · web bundle serves HTTP 200.
 
+## Build an APK
+
+APKs build on EAS via a manual GitHub Action. See `docs/EAS_APK_BUILD.md`
+for the one-time setup (`EXPO_TOKEN` secret + `eas build:configure`), then:
+repo → **Actions** → **Build APK** → **Run workflow**.
+
 ## Backend status
 
 No live backend is linked. Supabase migrations `0001–0012` define the schema
